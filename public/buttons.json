@@ -1,0 +1,16 @@
+{
+  "groups": [
+    {
+      "id": "main",
+      "title": "Acțiuni rapide",
+      "buttons": [
+        { "id": "fetchProfile", "label": "Fetch profil", "type": "api", "action": "https://api.agify.io/?name=andrei" },
+        { "id": "openModal", "label": "Deschide formular", "type": "modal", "action": "contactForm" },
+        { "id": "toggleDark", "label": "Tema", "type": "toggle", "action": "darkMode" },
+        { "id": "copyText", "label": "Copiază text", "type": "clipboard", "action": "Salut de la PWA demo!" },
+        { "id": "uploadFile", "label": "Încarcă fișier", "type": "file", "action": "" },
+        { "id": "timer", "label": "Start/Stop timer", "type": "timer", "action": "" }
+      ]
+    }
+  ]
+}

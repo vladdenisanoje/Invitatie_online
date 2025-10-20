@@ -1,0 +1,8 @@
+:root{--gap:12px;--bg:#f6f8fa;--card:#fff;--accent:#0b84ff}
+body{font-family:system-ui,Arial;margin:0;padding:18px;background:var(--bg);color:#111}
+.topbar{font-weight:600;margin-bottom:12px}
+.container{max-width:760px;margin:0 auto}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--gap)}
+.action-btn{padding:14px;border-radius:10px;border:1px solid #e0e0e0;background:var(--card);cursor:pointer;font-size:16px}
+@media(min-width:600px){.grid{grid-template-columns:repeat(3,1fr)}}
+.dark{background:#111;color:#fff}
