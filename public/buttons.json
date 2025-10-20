@@ -8,33 +8,33 @@
           "id": "whatsapp_yes",
           "label": "Confirmare (WhatsApp)",
           "type": "whatsapp",
-          "phone": "+40XXXXXXXXX",
+          "phone": "+40754241346",
           "message": "Ne-ar face multa placere sa va fim alaturi, numarul de persoane:"
         },
         {
           "id": "whatsapp_no",
           "label": "Refuz (WhatsApp)",
           "type": "whatsapp",
-          "phone": "+40XXXXXXXXX",
+          "phone": "+40754241346",
           "message": "Multumim mult, dar din pacate nu vom reusi sa participam!"
         },
         {
           "id": "map1",
           "label": "Locatie 1",
           "type": "maps",
-          "mapsUrl": ""
+          "mapsUrl": "https://maps.app.goo.gl/JNwbg2z7ttYm4GT89"
         },
         {
           "id": "map2",
           "label": "Locatie 2",
           "type": "maps",
-          "mapsUrl": ""
+          "mapsUrl": "https://maps.app.goo.gl/qnV1v6gKZiM5vwUr7"
         },
         {
           "id": "map3",
           "label": "Locatie 3",
           "type": "maps",
-          "mapsUrl": ""
+          "mapsUrl": "https://maps.app.goo.gl/9QA1b22MKGSSAoY87"
         },
         {
           "id": "calendar",
