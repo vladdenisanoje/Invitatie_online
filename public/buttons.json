@@ -4,12 +4,47 @@
       "id": "main",
       "title": "Acțiuni rapide",
       "buttons": [
-        { "id": "fetchProfile", "label": "Fetch profil", "type": "api", "action": "https://api.agify.io/?name=andrei" },
-        { "id": "openModal", "label": "Deschide formular", "type": "modal", "action": "contactForm" },
-        { "id": "toggleDark", "label": "Tema", "type": "toggle", "action": "darkMode" },
-        { "id": "copyText", "label": "Copiază text", "type": "clipboard", "action": "Salut de la PWA demo!" },
-        { "id": "uploadFile", "label": "Încarcă fișier", "type": "file", "action": "" },
-        { "id": "timer", "label": "Start/Stop timer", "type": "timer", "action": "" }
+        {
+          "id": "whatsapp_yes",
+          "label": "Confirmare (WhatsApp)",
+          "type": "whatsapp",
+          "phone": "+40XXXXXXXXX",
+          "message": "Ne-ar face multa placere sa va fim alaturi, numarul de persoane:"
+        },
+        {
+          "id": "whatsapp_no",
+          "label": "Refuz (WhatsApp)",
+          "type": "whatsapp",
+          "phone": "+40XXXXXXXXX",
+          "message": "Multumim mult, dar din pacate nu vom reusi sa participam!"
+        },
+        {
+          "id": "map1",
+          "label": "Locatie 1",
+          "type": "maps",
+          "mapsUrl": ""
+        },
+        {
+          "id": "map2",
+          "label": "Locatie 2",
+          "type": "maps",
+          "mapsUrl": ""
+        },
+        {
+          "id": "map3",
+          "label": "Locatie 3",
+          "type": "maps",
+          "mapsUrl": ""
+        },
+        {
+          "id": "calendar",
+          "label": "Adauga in calendar (18 Apr 2026)",
+          "type": "calendar",
+          "title": "Invitatie",
+          "start": "2026-04-18",
+          "end": "2026-04-18",
+          "details": "Invitatie la eveniment"
+        }
       ]
     }
   ]
