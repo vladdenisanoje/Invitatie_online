@@ -3,7 +3,7 @@ body{
   background: var(--bg);
   background-image: url("/Web Logo.png");
   background-repeat: no-repeat;
-  background-size: 400px auto; /* sau `cover`, `contain` etc. după cum vrei */
+  background-size: contain; /* sau `cover`, `contain` etc. după cum vrei */
   background-position: center center; /* sau altă poziție ex: top right */
 
   /*font-family:system-ui,Arial;margin:0;padding:18px;background:var(--bg);color:#111*/
