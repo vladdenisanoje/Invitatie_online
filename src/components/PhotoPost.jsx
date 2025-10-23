@@ -4,7 +4,6 @@ import { likePhoto, pinPhoto } from '../utils/photoStorage';
 export default function PhotoPost({ photo, onUpdate }) {
   const [showComments, setShowComments] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(false);
 
   const handleLike = () => {
     if (!isLiked) {
@@ -92,18 +91,7 @@ export default function PhotoPost({ photo, onUpdate }) {
 
       {/* Photo */}
       <div className="post-image">
-        {!imageLoaded && (
-          <div className="image-loading">
-            <div className="spinner"></div>
-          </div>
-        )}
-        <img 
-          src={photo.thumb || photo.url} 
-          alt="Wedding photo" 
-          loading="lazy"
-          onLoad={() => setImageLoaded(true)}
-          style={{ display: imageLoaded ? 'block' : 'none' }}
-        />
+        <img src={photo.url} alt="Wedding photo" />
         {photo.isPinned && (
           <div className="pin-badge">
             📌 Destacat
@@ -139,7 +127,7 @@ export default function PhotoPost({ photo, onUpdate }) {
         </button>
       </div>
 
-      {/* Comments (simplified for now) */}
+      {/* Comments */}
       {showComments && (
         <div className="post-comments">
           {photo.comments.length === 0 ? (
