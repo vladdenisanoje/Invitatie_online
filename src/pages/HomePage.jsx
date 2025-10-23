@@ -1,15 +1,41 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Countdown from '../components/Countdown';
+import PhotoPost from '../components/PhotoPost';
+import { getAllPhotos, getPinnedPhoto, updatePinnedPhotos } from '../utils/photoStorage';
 
 export default function HomePage() {
-  // Funcții pentru butoane
+  const [photos, setPhotos] = useState([]);
+  const [pinnedPhoto, setPinnedPhoto] = useState(null);
+
+  useEffect(() => {
+    loadPhotos();
+    
+    // Update pinned photos every second
+    const interval = setInterval(() => {
+      updatePinnedPhotos();
+      loadPhotos();
+    }, 1000);
+    
+    return () => clearInterval(interval);
+  }, []);
+
+  const loadPhotos = () => {
+    const allPhotos = getAllPhotos();
+    const pinned = getPinnedPhoto();
+    
+    // Filter out pinned photo from main feed
+    const regularPhotos = allPhotos.filter(p => !p.isPinned);
+    
+    setPhotos(regularPhotos);
+    setPinnedPhoto(pinned);
+  };
+
   const handleLocation = (locationName, mapsUrl) => {
     window.open(mapsUrl, '_blank');
   };
 
   const handleParticipation = (isAttending) => {
     const vladPhone = '+40763491494';
-    const denisaPhone = '+40769865955';
     
     let message;
     if (isAttending) {
@@ -18,13 +44,8 @@ export default function HomePage() {
       message = 'Mulțumim mult pentru invitație, dar din păcate nu vom reuși să participăm!';
     }
     
-    // Deschide WhatsApp cu Vlad (sau poți face să aleagă)
     const whatsappUrl = `https://wa.me/${vladPhone.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
-  };
-
-  const handleComment = () => {
-    alert('Funcția de comentarii va fi adăugată în următorul pas!');
   };
 
   const handleShare = async () => {
@@ -39,8 +60,7 @@ export default function HomePage() {
         console.log('Share cancelled');
       }
     } else {
-      // Fallback pentru desktop
-      alert('Link copiat! Poți trimite invitația prietenilor.');
+      alert('Link copiat!');
       navigator.clipboard.writeText(window.location.href);
     }
   };
@@ -66,7 +86,6 @@ export default function HomePage() {
             className="invitation-image"
           />
           
-          {/* Overlay pentru butoane locații */}
           <div className="location-overlay">
             <button 
               className="location-btn"
@@ -89,7 +108,6 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Butoane participare */}
         <div className="participation-buttons">
           <button 
             className="participate-btn yes"
@@ -105,23 +123,38 @@ export default function HomePage() {
           </button>
         </div>
 
-        {/* Interacțiuni */}
         <div className="post-interactions">
           <button className="interaction-btn">❤️ 156</button>
-          <button className="interaction-btn" onClick={handleComment}>
-            💬 Comentarii
-          </button>
+          <button className="interaction-btn">💬 Comentarii</button>
           <button className="interaction-btn" onClick={handleShare}>
             📤 Share
           </button>
         </div>
       </div>
 
-      {/* Feed poze invitați */}
+      {/* Pinned photo (if exists) */}
+      {pinnedPhoto && (
+        <div className="pinned-section">
+          <h3 className="section-title">📌 Poză Destacată</h3>
+          <PhotoPost photo={pinnedPhoto} onUpdate={loadPhotos} />
+        </div>
+      )}
+
+      {/* Feed with guest photos */}
       <div className="feed-section">
-        <p className="feed-placeholder">
-          📸 Pozele invitaților vor apărea aici după ce încep să încarce poze...
-        </p>
+        {photos.length === 0 ? (
+          <p className="feed-placeholder">
+            📸 Pozele invitaților vor apărea aici...<br/>
+            Mergi la Camera și încarcă prima poză!
+          </p>
+        ) : (
+          <>
+            <h3 className="section-title">📸 Poze de la nuntă ({photos.length})</h3>
+            {photos.map(photo => (
+              <PhotoPost key={photo.id} photo={photo} onUpdate={loadPhotos} />
+            ))}
+          </>
+        )}
       </div>
     </div>
   );
