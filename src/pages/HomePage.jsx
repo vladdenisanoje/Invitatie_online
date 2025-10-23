@@ -5,7 +5,7 @@ import { getAllPhotos, getPinnedPhotos, updatePinnedPhotos } from '../utils/phot
 
 export default function HomePage() {
   const [photos, setPhotos] = useState([]);
-  const [pinnedPhotos, setPinnedPhotos] = useState([]); // Changed from pinnedPhoto
+  const [pinnedPhotos, setPinnedPhotos] = useState([]);
 
   useEffect(() => {
     loadPhotos();
@@ -21,13 +21,14 @@ export default function HomePage() {
 
   const loadPhotos = () => {
     const allPhotos = getAllPhotos();
-    const pinned = getPinnedPhoto();
+    const pinned = getPinnedPhotos();
     
-    // Filter out pinned photo from main feed
-    const regularPhotos = allPhotos.filter(p => !p.isPinned);
+    // Filter out ALL pinned photos from main feed
+    const pinnedIds = pinned.map(p => p.id);
+    const regularPhotos = allPhotos.filter(p => !pinnedIds.includes(p.id));
     
     setPhotos(regularPhotos);
-    setPinnedPhoto(pinned);
+    setPinnedPhotos(pinned);
   };
 
   const handleLocation = (locationName, mapsUrl) => {
@@ -132,11 +133,15 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Pinned photo (if exists) */}
-      {pinnedPhoto && (
+      {/* Pinned photos (if any) */}
+      {pinnedPhotos.length > 0 && (
         <div className="pinned-section">
-          <h3 className="section-title">📌 Poză Destacată</h3>
-          <PhotoPost photo={pinnedPhoto} onUpdate={loadPhotos} />
+          <h3 className="section-title">
+            📌 Poze Destacate ({pinnedPhotos.length})
+          </h3>
+          {pinnedPhotos.map(photo => (
+            <PhotoPost key={`pinned-${photo.id}`} photo={photo} onUpdate={loadPhotos} />
+          ))}
         </div>
       )}
 
