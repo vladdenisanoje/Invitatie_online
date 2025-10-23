@@ -13,11 +13,23 @@ export default function PhotoPost({ photo, onUpdate }) {
     }
   };
 
+  
+  // În handlePin function, schimbă cu:
   const handlePin = () => {
+    const result = pinPhoto(photo.id);
+    if (result?.error) {
+      alert(`⏱️ ${result.error}\nAșteaptă ca timpul să expire!`);
+    } else {
+      onUpdate();
+      alert(`📌 +1 minut! (${result.pinCount}/5)`);
+    }
+  };
+
+  /*const handlePin = () => {
     pinPhoto(photo.id);
     onUpdate();
     alert('📌 Poza a fost adăugată la destacate pentru +1 minut!');
-  };
+  };*/
 
   const handleShare = async () => {
     if (navigator.share) {
