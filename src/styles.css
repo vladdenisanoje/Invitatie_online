@@ -365,3 +365,36 @@ body{
   transform: scale(1.02);
 }
 
+
+/* === Info Page Buttons === */
+.location-item,
+.contact-item {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.location-item:first-child,
+.contact-item:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.info-btn,
+.contact-btn {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 8px;
+  width: 100%;
+}
+
+.info-btn:hover,
+.contact-btn:hover {
+  opacity: 0.9;
+}
+
