@@ -594,3 +594,27 @@ body{
 .pinned-section .section-title {
   color: #FFD700;
 }
+
+
+/* Update pin-badge styling */
+.pin-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(255, 215, 0, 0.95);
+  color: #333;
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  text-align: center;
+  min-width: 80px;
+}
+
+.pin-timer {
+  font-size: 12px;
+  margin-top: 2px;
+  font-weight: 400;
+  opacity: 0.8;
+}
