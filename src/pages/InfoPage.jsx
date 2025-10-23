@@ -52,11 +52,12 @@ export default function InfoPage() {
           <p><strong>Elegance Ballroom Zalău</strong></p>
           <button 
             className="info-btn"
-            onClick={() => window.open('https://maps.app.goo.gl/your-link-here', '_blank')}
+            onClick={() => window.open('https://maps.app.goo.gl/CCEhSWbqv6eLEuKx9', '_blank')}
           >
             📍 Deschide în Maps
           </button>
         </div>
+
       </div>
 
       <div className="info-section">
