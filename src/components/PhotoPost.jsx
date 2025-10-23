@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { likePhoto, pinPhoto, getPinnedPhoto } from '../utils/photoStorage';
+import { likePhoto, pinPhoto } from '../utils/photoStorage';
 
 export default function PhotoPost({ photo, onUpdate }) {
   const [showComments, setShowComments] = useState(false);
@@ -59,6 +59,26 @@ export default function PhotoPost({ photo, onUpdate }) {
     return `${diffDays}z`;
   };
 
+  const getPinTimer = (pinnedUntil) => {
+    if (!pinnedUntil) return '';
+    
+    const now = new Date();
+    const until = new Date(pinnedUntil);
+    const diffMs = until - now;
+    
+    if (diffMs <= 0) return 'Expirat';
+    
+    const diffSeconds = Math.floor(diffMs / 1000);
+    const minutes = Math.floor(diffSeconds / 60);
+    const seconds = diffSeconds % 60;
+    
+    if (minutes > 0) {
+      return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    } else {
+      return `${seconds}s`;
+    }
+  };
+
   return (
     <div className={`photo-post ${photo.isPinned ? 'pinned' : ''}`}>
       {/* Header */}
@@ -75,6 +95,9 @@ export default function PhotoPost({ photo, onUpdate }) {
         {photo.isPinned && (
           <div className="pin-badge">
             📌 Destacat
+            <div className="pin-timer">
+              {getPinTimer(photo.pinnedUntil)}
+            </div>
           </div>
         )}
       </div>
