@@ -2,10 +2,10 @@ import React, { useState, useRef } from 'react';
 import { uploadToImgBB } from '../config/imgbb';
 import { addPhoto } from '../utils/photoStorage';
 import { useNavigate } from 'react-router-dom';
+import { showToast } from '../components/ToastContainer';
 
 export default function CameraPage() {
   const [selectedLocation, setSelectedLocation] = useState('general');
-  const [isUploading, setIsUploading] = useState(false);
   const [capturedImage, setCapturedImage] = useState(null);
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
@@ -16,6 +16,79 @@ export default function CameraPage() {
     { value: 'ballroom', label: '🎉 Ballroom' },
     { value: 'general', label: '📸 General' }
   ];
+
+  // Compress image
+  const compressImage = (file) => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      
+      reader.onload = (e) => {
+        const img = new Image();
+        
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          
+          let width = img.width;
+          let height = img.height;
+          const maxSize = 1200;
+          
+          if (width > height && width > maxSize) {
+            height = (height * maxSize) / width;
+            width = maxSize;
+          } else if (height > maxSize) {
+            width = (width * maxSize) / height;
+            height = maxSize;
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          canvas.toBlob(
+            (blob) => {
+              const compressedFile = new File([blob], file.name, {
+                type: 'image/jpeg',
+                lastModified: Date.now()
+              });
+              resolve(compressedFile);
+            },
+            'image/jpeg',
+            0.85
+          );
+        };
+        
+        img.src = e.target.result;
+      };
+      
+      reader.readAsDataURL(file);
+    });
+  };
+
+  // Background upload
+  const uploadInBackground = async (file, location) => {
+    try {
+      showToast('📤 Se încarcă poza...', 'info');
+      
+      const compressedFile = await compressImage(file);
+      const result = await uploadToImgBB(compressedFile);
+      
+      if (result.success) {
+        addPhoto({
+          url: result.url,
+          thumb: result.thumb,
+          location: location
+        });
+        
+        showToast('✅ Poza a fost încărcată!', 'success');
+      } else {
+        showToast('❌ Eroare la încărcare', 'error');
+      }
+    } catch (error) {
+      showToast('❌ Eroare la încărcare', 'error');
+      console.error('Upload error:', error);
+    }
+  };
 
   const handleCapture = () => {
     fileInputRef.current.click();
@@ -32,41 +105,19 @@ export default function CameraPage() {
     };
     reader.readAsDataURL(file);
 
-    // Upload to ImgBB
-    setIsUploading(true);
+    // Start background upload (non-blocking!)
+    uploadInBackground(file, selectedLocation);
     
-    try {
-      const result = await uploadToImgBB(file);
-      
-      if (result.success) {
-        // Save to localStorage
-        const photo = addPhoto({
-          url: result.url,
-          thumb: result.thumb,
-          location: selectedLocation
-        });
-        
-        alert('✅ Poza a fost încărcată cu succes!');
-        
-        // Navigate to home to see the photo
-        setTimeout(() => {
-          navigate('/');
-        }, 1500);
-      } else {
-        alert('❌ Eroare la încărcare. Încearcă din nou!');
-      }
-    } catch (error) {
-      alert('❌ Eroare la încărcare. Verifică conexiunea!');
-    } finally {
-      setIsUploading(false);
-    }
+    // Navigate immediately
+    setTimeout(() => {
+      navigate('/');
+    }, 1000);
   };
 
   return (
     <div className="page camera-page">
       <h2>📸 Încarcă o poză</h2>
       
-      {/* Location selector */}
       <div className="location-selector">
         <label>Alege locația:</label>
         <select 
@@ -82,7 +133,6 @@ export default function CameraPage() {
         </select>
       </div>
 
-      {/* Hidden file input */}
       <input
         ref={fileInputRef}
         type="file"
@@ -92,26 +142,21 @@ export default function CameraPage() {
         style={{ display: 'none' }}
       />
 
-      {/* Preview */}
       {capturedImage && (
         <div className="image-preview">
           <img src={capturedImage} alt="Preview" />
         </div>
       )}
 
-      {/* Capture button */}
       <button 
         className="camera-btn"
         onClick={handleCapture}
-        disabled={isUploading}
       >
-        {isUploading ? '⏳ Se încarcă...' : '📷 Fă o poză / Alege din galerie'}
+        📷 Fă o poză / Alege din galerie
       </button>
 
       <p className="camera-hint">
-        {isUploading 
-          ? 'Se încarcă poza...' 
-          : 'Apasă butonul pentru a face o poză sau alege din galerie'}
+        Poza se va încărca automat în fundal
       </p>
     </div>
   );
