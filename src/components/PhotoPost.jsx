@@ -91,7 +91,7 @@ export default function PhotoPost({ photo, onUpdate }) {
 
       {/* Photo */}
       <div className="post-image">
-        <img src={photo.url} alt="Wedding photo" />
+        <img src={photo.thumb || photo.url} alt="Wedding photo" loading="lazy" />
         {photo.isPinned && (
           <div className="pin-badge">
             📌 Destacat
