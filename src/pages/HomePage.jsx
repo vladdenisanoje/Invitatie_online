@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Countdown from '../components/Countdown';
 import PhotoPost from '../components/PhotoPost';
-import { getAllPhotos, getPinnedPhoto, updatePinnedPhotos } from '../utils/photoStorage';
+import { getAllPhotos, getPinnedPhotos, updatePinnedPhotos } from '../utils/photoStorage';
 
 export default function HomePage() {
   const [photos, setPhotos] = useState([]);
