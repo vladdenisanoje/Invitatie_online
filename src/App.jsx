@@ -1,24 +1,24 @@
 import React from 'react';
-import ButtonGrid from './components/ButtonGrid';
-import Countdown from './components/Countdown';
-import useConfig from './hooks/useConfig';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import HomePage from './pages/HomePage';
+import CameraPage from './pages/CameraPage';
+import GalleryPage from './pages/GalleryPage';
+import InfoPage from './pages/InfoPage';
+import BottomNav from './components/BottomNav';
 
 export default function App() {
-  const config = useConfig('/buttons.json');
-
   return (
-    <div className="container">
-      <div className="topbar">Invitație Online</div>
-      
-      {/* Countdown Timer */}
-      <Countdown targetDate="2026-04-18T00:00:00" />
-      
-      {/* Butoane WhatsApp, Maps, Calendar */}
-      {!config ? (
-        <div>Se încarcă...</div>
-      ) : (
-        <ButtonGrid groups={config.groups} />
-      )}
-    </div>
+    <BrowserRouter>
+      <div className="app-container">
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/camera" element={<CameraPage />} />
+          <Route path="/gallery" element={<GalleryPage />} />
+          <Route path="/info" element={<InfoPage />} />
+        </Routes>
+        
+        <BottomNav />
+      </div>
+    </BrowserRouter>
   );
 }
