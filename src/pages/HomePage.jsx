@@ -82,7 +82,7 @@ export default function HomePage() {
             </button>
             <button 
               className="location-btn"
-              onClick={() => handleLocation('Elegance Ballroom', 'https://maps.app.goo.gl/your-link-here')}
+              onClick={() => handleLocation('Elegance Ballroom', 'https://maps.app.goo.gl/CCEhSWbqv6eLEuKx9')}
             >
               🎊 Elegance Ballroom Zalău
             </button>
