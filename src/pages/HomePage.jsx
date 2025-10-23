@@ -4,6 +4,8 @@ import PhotoPost from '../components/PhotoPost';
 import Stories from '../components/Stories';
 import { getAllPhotos, getPinnedPhotos, updatePinnedPhotos } from '../utils/photoStorage';
 
+import { Link } from 'react-router-dom';
+
 export default function HomePage() {
   const [photos, setPhotos] = useState([]);
   const [pinnedPhotos, setPinnedPhotos] = useState([]);
@@ -158,6 +160,15 @@ export default function HomePage() {
           </>
         )}
       </div>
+
+
+      // Adaugă în HomePage.jsx înainte de </div>:
+      <Link to="/camera" className="fab">
+        <span>📷</span>
+      </Link>
+
+
+      
     </div>
   );
 }
