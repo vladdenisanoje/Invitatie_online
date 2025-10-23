@@ -79,11 +79,19 @@ export function updatePinnedPhotos() {
   return photos;
 }
 
-// Get pinned photo
-export function getPinnedPhoto() {
+// Get ALL pinned photos (not just one)
+export function getPinnedPhotos() {
   updatePinnedPhotos();
   const photos = getAllPhotos();
-  return photos.find(photo => photo.isPinned);
+  return photos.filter(photo => photo.isPinned).sort((a, b) => 
+    new Date(b.pinnedUntil) - new Date(a.pinnedUntil) // Most recent pin first
+  );
+}
+
+// Keep the old function for compatibility (returns first pinned photo)
+export function getPinnedPhoto() {
+  const pinnedPhotos = getPinnedPhotos();
+  return pinnedPhotos.length > 0 ? pinnedPhotos[0] : null;
 }
 
 // Like a photo
