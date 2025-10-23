@@ -5,7 +5,7 @@ import { getAllPhotos, getPinnedPhotos, updatePinnedPhotos } from '../utils/phot
 
 export default function HomePage() {
   const [photos, setPhotos] = useState([]);
-  const [pinnedPhoto, setPinnedPhoto] = useState(null);
+  const [pinnedPhotos, setPinnedPhotos] = useState([]); // Changed from pinnedPhoto
 
   useEffect(() => {
     loadPhotos();
