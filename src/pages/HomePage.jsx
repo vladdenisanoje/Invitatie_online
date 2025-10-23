@@ -1,16 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Countdown from '../components/Countdown';
 import PhotoPost from '../components/PhotoPost';
+import Stories from '../components/Stories';
 import { getAllPhotos, getPinnedPhotos, updatePinnedPhotos } from '../utils/photoStorage';
-
-
-import Stories from '../components/Stories'; // Add this import
-
-// Replace the stories-container div with:
-<Stories />
-
-
-
 
 export default function HomePage() {
   const [photos, setPhotos] = useState([]);
@@ -77,12 +69,8 @@ export default function HomePage() {
 
   return (
     <div className="page">
-      {/* Stories placeholder */}
-      <div className="stories-container">
-        <div className="story-bubble">📍 Primăria</div>
-        <div className="story-bubble">⛪ Sala Regatului</div>
-        <div className="story-bubble">🎉 Petrecere</div>
-      </div>
+      {/* Stories - NOW INTERACTIVE */}
+      <Stories />
 
       {/* Countdown */}
       <Countdown targetDate="2026-04-18T10:00:00" />
