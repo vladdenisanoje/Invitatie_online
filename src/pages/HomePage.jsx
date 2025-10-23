@@ -3,6 +3,15 @@ import Countdown from '../components/Countdown';
 import PhotoPost from '../components/PhotoPost';
 import { getAllPhotos, getPinnedPhotos, updatePinnedPhotos } from '../utils/photoStorage';
 
+
+import Stories from '../components/Stories'; // Add this import
+
+// Replace the stories-container div with:
+<Stories />
+
+
+
+
 export default function HomePage() {
   const [photos, setPhotos] = useState([]);
   const [pinnedPhotos, setPinnedPhotos] = useState([]);
