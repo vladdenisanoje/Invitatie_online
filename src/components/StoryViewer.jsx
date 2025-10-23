@@ -95,7 +95,13 @@ export default function StoryViewer({ storyId, onClose }) {
 
       {/* Photo */}
       <div className="story-content">
-        <img src={currentPhoto.url} alt="Story" />
+        <img 
+          src={currentPhoto.url} 
+          alt="Story" 
+          loading="eager"
+          style={{ objectFit: 'contain' }}
+        />
+
         
         {/* Navigation areas */}
         <div className="story-nav-prev" onClick={handlePrev} />
