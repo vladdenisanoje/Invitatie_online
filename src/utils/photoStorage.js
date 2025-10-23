@@ -1,3 +1,98 @@
+const STORAGE_KEY = 'wedding_photos';
+const PIN_LIMIT_KEY = 'pin_limits';
+const MAX_PINS_PER_PHOTO = 5;
+
+export function getAllPhotos() {
+  return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+}
+
+export function addPhoto(data) {
+  const photos = getAllPhotos();
+  const newPhoto = {
+    id: Date.now(),
+    url: data.url,
+    thumb: data.thumb,
+    timestamp: new Date().toISOString(),
+    location: data.location || 'general',
+    likes: 0,
+    comments: [],
+    isPinned: false,
+    pinnedUntil: null,
+    pinCount: 0
+  };
+  photos.unshift(newPhoto);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(photos));
+  return newPhoto;
+}
+
+export function pinPhoto(photoId) {
+  const photos = getAllPhotos();
+  const photo = photos.find(p => p.id === photoId);
+  if (!photo) return null;
+  
+  if (photo.pinCount >= MAX_PINS_PER_PHOTO) {
+    return { error: `Limită atinsă (${MAX_PINS_PER_PHOTO}/5 pin-uri)` };
+  }
+  
+  const now = new Date();
+  const until = photo.pinnedUntil ? new Date(photo.pinnedUntil) : now;
+  until.setMinutes(until.getMinutes() + 1);
+  
+  photo.isPinned = true;
+  photo.pinnedUntil = until.toISOString();
+  photo.pinCount = (photo.pinCount || 0) + 1;
+  
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(photos));
+  return photo;
+}
+
+export function updatePinnedPhotos() {
+  const photos = getAllPhotos();
+  const now = new Date();
+  photos.forEach(photo => {
+    if (photo.isPinned && new Date(photo.pinnedUntil) < now) {
+      photo.isPinned = false;
+      photo.pinnedUntil = null;
+      photo.pinCount = 0;
+    }
+  });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(photos));
+}
+
+export function getPinnedPhotos() {
+  updatePinnedPhotos();
+  return getAllPhotos().filter(p => p.isPinned).sort((a, b) => new Date(b.pinnedUntil) - new Date(a.pinnedUntil));
+}
+
+export function getPhotosByLocation(location) {
+  return getAllPhotos().filter(p => p.location === location);
+}
+
+export function likePhoto(photoId) {
+  const photos = getAllPhotos();
+  const photo = photos.find(p => p.id === photoId);
+  if (photo) {
+    photo.likes += 1;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(photos));
+  }
+  return photo;
+}
+
+export function addComment(photoId, text) {
+  const photos = getAllPhotos();
+  const photo = photos.find(p => p.id === photoId);
+  if (photo) {
+    photo.comments.push({ id: Date.now(), text, timestamp: new Date().toISOString() });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(photos));
+  }
+  return photo;
+}
+
+
+
+
+
+/*
 // Photo storage management using localStorage
 
 const STORAGE_KEY = 'wedding_photos';
@@ -123,3 +218,4 @@ export function addComment(photoId, commentText) {
   
   return photo;
 }
+*/
