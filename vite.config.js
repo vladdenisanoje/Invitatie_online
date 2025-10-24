@@ -7,6 +7,27 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
+      registerType: 'autoUpdate'
+    })
+  ]
+})
+
+
+
+
+
+
+
+/*
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import { VitePWA } from 'vite-plugin-pwa'
+
+export default defineConfig({
+  base: '/Invitatie_online/',
+  plugins: [
+    react(),
+    VitePWA({
       registerType: 'autoUpdate',
       manifest: {
         name: 'Nuntă Vlad & Denisa',
@@ -21,7 +42,7 @@ export default defineConfig({
     })
   ]
 })
-
+*/
 
 
 
