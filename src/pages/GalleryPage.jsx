@@ -5,7 +5,7 @@ import { getAllPhotos } from '../utils/photoStorage';
 export default function GalleryPage() {
   const [photos, setPhotos] = useState([]);
   const [filter, setFilter] = useState('all');
-  const albumUrl = 'https://imgbb.com/album/XXXXXXX'; // schimbă URL-ul cu al tău
+  const albumUrl = "https://ibb.co/album/r3HRXD"; // schimbă URL-ul cu al tău
 
   useEffect(() => {
     if (filter === 'mine') {
