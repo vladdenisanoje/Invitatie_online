@@ -29,7 +29,7 @@ export default function PhotoPost({ photo, onUpdate, isFullscreen, onClose }) {
   const handlePin = () => {
     const result = pinPhoto(photo.id);
     if (result?.error) {
-      // Toast minimal
+      // Silent fail or toast
     } else {
       onUpdate();
     }
@@ -46,6 +46,35 @@ export default function PhotoPost({ photo, onUpdate, isFullscreen, onClose }) {
     }
   };
 
+  const getTimeAgo = (timestamp) => {
+    const now = new Date();
+    const posted = new Date(timestamp);
+    const diffMs = now - posted;
+    const diffMins = Math.floor(diffMs / 60000);
+    if (diffMins < 1) return 'Acum';
+    if (diffMins < 60) return `${diffMins} min`;
+    const diffHours = Math.floor(diffMins / 60);
+    if (diffHours < 24) return `${diffHours}h`;
+    const diffDays = Math.floor(diffHours / 24);
+    return `${diffDays}z`;
+  };
+
+  const getPinTimer = (pinnedUntil) => {
+    if (!pinnedUntil) return '';
+    const now = new Date();
+    const until = new Date(pinnedUntil);
+    const diffMs = until - now;
+    if (diffMs <= 0) return 'Expirat';
+    const diffSeconds = Math.floor(diffMs / 1000);
+    const minutes = Math.floor(diffSeconds / 60);
+    const seconds = diffSeconds % 60;
+    if (minutes > 0) {
+      return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    } else {
+      return `${seconds}s`;
+    }
+  };
+
   return (
     <div 
       className={`photo-post ${photo.isPinned ? 'pinned' : ''} ${isFullscreen ? 'fullscreen' : ''}`}
@@ -54,7 +83,7 @@ export default function PhotoPost({ photo, onUpdate, isFullscreen, onClose }) {
     >
       {!isFullscreen && (
         <div className="post-header">
-          <span>{new Date(photo.timestamp).toLocaleTimeString('ro-RO', { hour: '2-digit', minute: '2-digit' })}</span>
+          <span className="post-time">{getTimeAgo(photo.timestamp)}</span>
         </div>
       )}
 
@@ -62,7 +91,12 @@ export default function PhotoPost({ photo, onUpdate, isFullscreen, onClose }) {
         <img src={photo.url} alt="Photo" />
         {showHeartAnim && <div className="heart-burst">❤️</div>}
         {photo.isPinned && (
-          <div className="pin-indicator">📌 {photo.pinCount}/5</div>
+          <div className="pin-indicator">
+            📌 {photo.pinCount || 1}/5
+            {photo.pinnedUntil && (
+              <div className="pin-timer">{getPinTimer(photo.pinnedUntil)}</div>
+            )}
+          </div>
         )}
       </div>
 
@@ -78,11 +112,16 @@ export default function PhotoPost({ photo, onUpdate, isFullscreen, onClose }) {
 
       {showComments && (
         <div className="comments-section">
-          {photo.comments.map(c => (
-            <div key={c.id} className="comment">
-              <p>{c.text}</p>
-            </div>
-          ))}
+          {photo.comments.length === 0 ? (
+            <p className="no-comments">Fii primul care comentează!</p>
+          ) : (
+            photo.comments.map(c => (
+              <div key={c.id} className="comment">
+                <p>{c.text}</p>
+                <span className="comment-time">{getTimeAgo(c.timestamp)}</span>
+              </div>
+            ))
+          )}
         </div>
       )}
     </div>
