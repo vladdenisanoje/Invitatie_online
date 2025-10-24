@@ -290,5 +290,5 @@ export default function PhotoPost({ photo, onUpdate }) {
       )}
     </div>
   );
-  */
 }
+*/
