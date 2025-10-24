@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { HashRouter, Routes, Route } from 'react-router-dom';  // ← SCHIMBĂ BrowserRouter → HashRouter
+import { HashRouter, Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import CameraPage from './pages/CameraPage';
 import GalleryPage from './pages/GalleryPage';
@@ -21,7 +21,7 @@ export default function App() {
   }, [isDark]);
 
   return (
-    <HashRouter>  {/* ← SCHIMBĂ BrowserRouter → HashRouter */}
+    <HashRouter>
       <div className="app-container" data-theme={isDark ? 'dark' : 'light'}>
         <Routes>
           <Route path="/" element={<HomePage isDark={isDark} setIsDark={setIsDark} />} />
@@ -33,9 +33,10 @@ export default function App() {
         <BottomNav />
         <ToastContainer />
       </div>
-    </HashRouter>  {/* ← SCHIMBĂ */}
+    </HashRouter>
   );
 }
+
 
 
 
