@@ -5,7 +5,7 @@ import PhotoPost from '../components/PhotoPost';
 import Stories from '../components/Stories';
 import { getAllPhotos, getPinnedPhotos, updatePinnedPhotos } from '../utils/photoStorage';
 
-export default function HomePage() {
+export default function HomePage({ isDark, setIsDark }) {
   const [photos, setPhotos] = useState([]);
   const [pinnedPhotos, setPinnedPhotos] = useState([]);
   const [deferredPrompt, setDeferredPrompt] = useState(null);
@@ -88,52 +88,94 @@ export default function HomePage() {
 
   return (
     <div className="page">
+      {/* Theme Toggle Button */}
+      <button className="theme-toggle-btn" onClick={() => setIsDark(!isDark)} title="Toggle Dark Mode">
+        {isDark ? '☀️' : '🌙'}
+      </button>
+
+      {/* Install App Button */}
       {showInstallButton && (
         <button className="install-app-btn" onClick={handleInstallClick}>
           📱 Instalează Aplicația
         </button>
       )}
 
+      {/* Stories */}
       <Stories />
+
+      {/* Countdown */}
       <Countdown targetDate="2026-04-18T10:00:00" />
 
+      {/* Main Post Card */}
       <div className="post-card">
         <div className="post-image">
-          <img src="/Front.jpg" alt="Invitație Nuntă Vlad & Denisa" className="invitation-image" />
+          <img 
+            src="/Front.jpg" 
+            alt="Invitație Nuntă Vlad & Denisa" 
+            className="invitation-image" 
+          />
+          
           <div className="location-overlay">
-            <button className="location-btn" onClick={() => handleLocation('Primăria Creaca', 'https://maps.app.goo.gl/JNwbg2z7ttYm4GT89')}>
+            <button 
+              className="location-btn"
+              onClick={() => handleLocation('Primăria Creaca', 'https://maps.app.goo.gl/JNwbg2z7ttYm4GT89')}
+            >
               📍 Primăria din Creaca
             </button>
-            <button className="location-btn" onClick={() => handleLocation('Sala Regatului', 'https://maps.app.goo.gl/qnV1v6gKZiM5vwUr7')}>
+            <button 
+              className="location-btn"
+              onClick={() => handleLocation('Sala Regatului', 'https://maps.app.goo.gl/qnV1v6gKZiM5vwUr7')}
+            >
               ⛪ Sala Regatului Moigrad
             </button>
-            <button className="location-btn" onClick={() => handleLocation('Elegance Ballroom', 'https://maps.app.goo.gl/wsAfAJYf1GfEhTYF7')}>
+            <button 
+              className="location-btn"
+              onClick={() => handleLocation('Elegance Ballroom', 'https://maps.app.goo.gl/wsAfAJYf1GfEhTYF7')}
+            >
               🎊 Elegance Ballroom Zalău
             </button>
           </div>
         </div>
 
         <div className="participation-buttons">
-          <button className="participate-btn yes" onClick={() => handleParticipation(true)}>✅ Vin!</button>
-          <button className="participate-btn no" onClick={() => handleParticipation(false)}>❌ Nu pot veni</button>
+          <button 
+            className="participate-btn yes" 
+            onClick={() => handleParticipation(true)}
+          >
+            ✅ Vin!
+          </button>
+          <button 
+            className="participate-btn no" 
+            onClick={() => handleParticipation(false)}
+          >
+            ❌ Nu pot veni
+          </button>
         </div>
 
         <div className="post-interactions">
           <button className="interaction-btn">❤️ 156</button>
           <button className="interaction-btn">💬 Comentarii</button>
-          <button className="interaction-btn" onClick={handleShare}>📤 Share</button>
+          <button className="interaction-btn" onClick={handleShare}>
+            📤 Share
+          </button>
         </div>
       </div>
 
+      {/* Pinned Photos Section */}
       {pinnedPhotos.length > 0 && (
         <div className="pinned-section">
           <h3 className="section-title">📌 Poze Destacate ({pinnedPhotos.length})</h3>
           {pinnedPhotos.map(photo => (
-            <PhotoPost key={`pinned-${photo.id}`} photo={photo} onUpdate={loadPhotos} />
+            <PhotoPost 
+              key={`pinned-${photo.id}`} 
+              photo={photo} 
+              onUpdate={loadPhotos} 
+            />
           ))}
         </div>
       )}
 
+      {/* Photos Feed Section */}
       <div className="feed-section">
         {photos.length === 0 ? (
           <p className="feed-placeholder">
@@ -144,13 +186,18 @@ export default function HomePage() {
           <>
             <h3 className="section-title">📸 Poze de la nuntă ({photos.length})</h3>
             {photos.map(photo => (
-              <PhotoPost key={photo.id} photo={photo} onUpdate={loadPhotos} />
+              <PhotoPost 
+                key={photo.id} 
+                photo={photo} 
+                onUpdate={loadPhotos} 
+              />
             ))}
           </>
         )}
       </div>
 
-      <Link to="/camera" className="fab">
+      {/* Floating Camera Button */}
+      <Link to="/camera" className="fab" title="Fă o poză">
         <span>📷</span>
       </Link>
     </div>
