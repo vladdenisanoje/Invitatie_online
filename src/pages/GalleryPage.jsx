@@ -1,4 +1,35 @@
 import React, { useState, useEffect } from 'react';
+import { fetchImgBBAlbumImages } from '../utils/imgbbAlbum';
+
+export default function GalleryPage() {
+  const [photos, setPhotos] = useState([]);
+  const albumUrl = 'https://imgbb.com/album/XXXXXXX'; // pune aici link-ul tău public de album
+
+  useEffect(() => {
+    fetchImgBBAlbumImages(albumUrl).then(setPhotos);
+  }, [albumUrl]);
+
+  return (
+    <div className="page gallery-page">
+      <div className="gallery-header">
+        <h2>Galerie</h2>
+        <span>{photos.length} poze publice</span>
+      </div>
+      <div className="gallery-grid">
+        {photos.map((url, idx) => (
+          <div key={url + idx} className="gallery-item">
+            <img src={url} alt="Poza de la nuntă" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+
+/*
+
+import React, { useState, useEffect } from 'react';
 import { getAllPhotos } from '../utils/photoStorage';
 import PhotoPost from '../components/PhotoPost';
 
@@ -51,7 +82,7 @@ export default function GalleryPage() {
     </div>
   );
 }
-
+*/
 
 
 /*import React, { useState, useEffect } from 'react';
