@@ -1,3 +1,103 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { getStoryPhotos } from '../utils/storiesUtils';
+
+export default function StoryViewer({ storyId, onClose }) {
+  const [photos, setPhotos] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const containerRef = useRef(null);
+  const touchStart = useRef(0);
+
+  useEffect(() => {
+    setPhotos(getStoryPhotos(storyId));
+  }, [storyId]);
+
+  useEffect(() => {
+    if (photos.length === 0) return;
+    const timer = setInterval(() => {
+      setProgress(p => {
+        if (p >= 100) {
+          if (currentIndex < photos.length - 1) {
+            setCurrentIndex(i => i + 1);
+            return 0;
+          } else {
+            onClose();
+          }
+        }
+        return p + 2;
+      });
+    }, 50);
+    return () => clearInterval(timer);
+  }, [currentIndex, photos, onClose]);
+
+  const handleTouchStart = (e) => {
+    touchStart.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e) => {
+    const touchEnd = e.changedTouches[0].clientY;
+    const diff = touchStart.current - touchEnd;
+    if (Math.abs(diff) > 100) {
+      if (diff < 0) onClose(); // Swipe down
+    }
+  };
+
+  const handleClick = (e) => {
+    const width = e.currentTarget.offsetWidth;
+    const clickX = e.clientX;
+    if (clickX < width / 3 && currentIndex > 0) {
+      setCurrentIndex(i => i - 1);
+      setProgress(0);
+    } else if (clickX > (2 * width) / 3) {
+      if (currentIndex < photos.length - 1) {
+        setCurrentIndex(i => i + 1);
+        setProgress(0);
+      } else {
+        onClose();
+      }
+    }
+  };
+
+  if (photos.length === 0) return null;
+
+  return (
+    <div 
+      className="story-viewer-fullscreen" 
+      ref={containerRef}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      onClick={handleClick}
+    >
+      <div className="story-progress-bars">
+        {photos.map((_, i) => (
+          <div key={i} className="progress-segment">
+            <div 
+              className="progress-fill" 
+              style={{
+                width: i === currentIndex ? `${progress}%` : i < currentIndex ? '100%' : '0%'
+              }}
+            />
+          </div>
+        ))}
+      </div>
+
+      <button className="story-close-btn" onClick={onClose}>✕</button>
+
+      <div className="story-photo-container">
+        <img src={photos[currentIndex].url} alt="Story" />
+      </div>
+
+      <div className="story-info-bottom">
+        <p>{currentIndex + 1} / {photos.length}</p>
+      </div>
+    </div>
+  );
+}
+
+
+
+
+/*
 import React, { useState, useEffect } from 'react';
 import { getStoryPhotos } from '../utils/storiesUtils';
 
@@ -69,7 +169,7 @@ export default function StoryViewer({ storyId, onClose }) {
 
   return (
     <div className="story-viewer">
-      {/* Progress bars */}
+      {/* Progress bars *--/}
       <div className="story-progress">
         {photos.map((_, index) => (
           <div key={index} className="progress-bar">
@@ -84,7 +184,7 @@ export default function StoryViewer({ storyId, onClose }) {
         ))}
       </div>
 
-      {/* Header */}
+      {/* Header *--/}
       <div className="story-header">
         <div className="story-info">
           <h3>{getLocationTitle(currentPhoto.location)}</h3>
@@ -93,7 +193,7 @@ export default function StoryViewer({ storyId, onClose }) {
         <button className="close-btn" onClick={onClose}>✕</button>
       </div>
 
-      {/* Photo */}
+      {/* Photo *--/}
       <div className="story-content">
         <img 
           src={currentPhoto.url} 
@@ -103,15 +203,16 @@ export default function StoryViewer({ storyId, onClose }) {
         />
 
         
-        {/* Navigation areas */}
+        {/* Navigation areas *--/}
         <div className="story-nav-prev" onClick={handlePrev} />
         <div className="story-nav-next" onClick={handleNext} />
       </div>
 
-      {/* Footer */}
+      {/* Footer *--/}
       <div className="story-footer">
         <p>❤️ {currentPhoto.likes} • 💬 {currentPhoto.comments.length}</p>
       </div>
     </div>
   );
 }
+*/
