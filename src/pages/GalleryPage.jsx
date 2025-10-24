@@ -1,19 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { fetchImgBBAlbumImages } from '../utils/imgbbAlbum';
-import { getAllPhotos } from '../utils/photoStorage'; // păstrezi logica locală!
+import { getAllPhotos } from '../utils/photoStorage';
 
 export default function GalleryPage() {
   const [photos, setPhotos] = useState([]);
   const [filter, setFilter] = useState('all');
-  const albumUrl = 'https://imgbb.com/album/XXXXXXX'; // AICI LINKUL TĂU PUBLIC
+  const albumUrl = 'https://imgbb.com/album/XXXXXXX'; // schimbă URL-ul cu al tău
 
   useEffect(() => {
     if (filter === 'mine') {
-      // Pozele uploadate de user pe device-ul curent
       const mine = getAllPhotos();
       setPhotos(mine);
     } else {
-      // Pozele din albumul public ImgBB
       fetchImgBBAlbumImages(albumUrl).then(setPhotos);
     }
   }, [filter, albumUrl]);
@@ -30,12 +28,19 @@ export default function GalleryPage() {
       </div>
       <div className="gallery-grid">
         {photos.map((photo, idx) => {
-          // GLOBAL: vine string (link), LOCAL: vine obiect, deci merge cu .url sau direct string
           const imgSrc = typeof photo === 'string'
             ? photo
             : (photo.thumb || photo.url);
           return (
-            <div key={img
+            <div key={imgSrc + idx} className="gallery-item">
+              <img src={imgSrc} alt="Poza galerie" />
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+} // ← ATENȚIE! Această acoladă FINALĂ trebuie să existe!
 
 
 
