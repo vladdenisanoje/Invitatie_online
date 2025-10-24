@@ -1,30 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import { fetchImgBBAlbumImages } from '../utils/imgbbAlbum';
+import { getAllPhotos } from '../utils/photoStorage'; // păstrezi logica locală!
 
 export default function GalleryPage() {
   const [photos, setPhotos] = useState([]);
-  const albumUrl = 'https://imgbb.com/album/XXXXXXX'; // pune aici link-ul tău public de album
+  const [filter, setFilter] = useState('all');
+  const albumUrl = 'https://imgbb.com/album/XXXXXXX'; // AICI LINKUL TĂU PUBLIC
 
   useEffect(() => {
-    fetchImgBBAlbumImages(albumUrl).then(setPhotos);
-  }, [albumUrl]);
+    if (filter === 'mine') {
+      // Pozele uploadate de user pe device-ul curent
+      const mine = getAllPhotos();
+      setPhotos(mine);
+    } else {
+      // Pozele din albumul public ImgBB
+      fetchImgBBAlbumImages(albumUrl).then(setPhotos);
+    }
+  }, [filter, albumUrl]);
 
   return (
     <div className="page gallery-page">
       <div className="gallery-header">
         <h2>Galerie</h2>
-        <span>{photos.length} poze publice</span>
+        <select value={filter} onChange={e => setFilter(e.target.value)}>
+          <option value="all">Toate</option>
+          <option value="mine">Ale mele</option>
+        </select>
+        <span>{photos.length} poze</span>
       </div>
       <div className="gallery-grid">
-        {photos.map((url, idx) => (
-          <div key={url + idx} className="gallery-item">
-            <img src={url} alt="Poza de la nuntă" />
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
+        {photos.map((photo, idx) => {
+          // GLOBAL: vine string (link), LOCAL: vine obiect, deci merge cu .url sau direct string
+          const imgSrc = typeof photo === 'string'
+            ? photo
+            : (photo.thumb || photo.url);
+          return (
+            <div key={img
+
 
 
 /*
