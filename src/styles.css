@@ -9,15 +9,16 @@
   --border: #DBDBDB;
 }
 
-/* Dark Mode - Instagram Style (gri închis, nu negru) */
+/* Dark Mode - OLED Instagram Style (mai inchis, intre gri si negru) */
 [data-theme="dark"] {
-  --bg: #121212;
-  --card: #1E1E1E;
-  --text: #F0F0F0;
-  --text-light: #B0B0B0;
+  --bg: #0A0A0A;
+  --card: #1A1A1A;
+  --text: #EFEFEF;
+  --text-light: #A8A8A8;
   --accent: #E1306C;
-  --border: #2A2A2A;
+  --border: #2D2D2D;
 }
+
 
 * {
   margin: 0;
