@@ -1,4 +1,46 @@
 import React, { useState, useEffect } from 'react';
+import { getStoriesByHour } from '../utils/storiesUtils';
+import StoryViewer from './StoryViewer';
+
+export default function Stories() {
+  const [stories, setStories] = useState([]);
+  const [selectedStory, setSelectedStory] = useState(null);
+
+  useEffect(() => {
+    loadStories();
+  }, []);
+
+  const loadStories = () => {
+    setStories(getStoriesByHour());
+  };
+
+  return (
+    <>
+      <div className="stories-container">
+        {stories.map(story => (
+          <div key={story.id} className="story-bubble" onClick={() => setSelectedStory(story.id)}>
+            <div className={`story-ring ${story.hasNew ? 'new' : ''}`}>
+              <div className="story-preview">
+                <img src={story.lastPhoto.thumb || story.lastPhoto.url} alt="Story preview" />
+              </div>
+            </div>
+            <span className="story-label">{story.title}</span>
+          </div>
+        ))}
+      </div>
+
+      {selectedStory && (
+        <StoryViewer storyId={selectedStory} onClose={() => setSelectedStory(null)} />
+      )}
+    </>
+  );
+}
+
+
+
+
+/*
+import React, { useState, useEffect } from 'react';
 import { getStoriesByLocation } from '../utils/storiesUtils';
 import StoryViewer from './StoryViewer';
 
@@ -51,7 +93,7 @@ export default function Stories() {
         )}
       </div>
 
-      {/* Story Viewer */}
+      {/* Story Viewer *-/}
       {selectedStory && (
         <StoryViewer 
           storyId={selectedStory}
@@ -61,3 +103,4 @@ export default function Stories() {
     </>
   );
 }
+*/
