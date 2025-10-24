@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { getStoriesByHour } from '../utils/storiesUtils';
 import StoryViewer from './StoryViewer';
 
@@ -17,9 +18,25 @@ export default function Stories() {
   return (
     <>
       <div className="stories-container">
+        {/* Camera Button - FAB Style */}
+        <Link to="/camera" className="story-bubble camera-fab" title="Fă o poză">
+          <div className="camera-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+              <circle cx="12" cy="13" r="4"/>
+            </svg>
+          </div>
+          <span className="story-label">Poza</span>
+        </Link>
+
+        {/* Stories */}
         {stories.map(story => (
-          <div key={story.id} className="story-bubble" onClick={() => setSelectedStory(story.id)}>
-            <div className={`story-ring ${story.hasNew ? 'new' : ''}`}>
+          <div 
+            key={story.id}
+            className="story-bubble" 
+            onClick={() => setSelectedStory(story.id)}
+          >
+            <div className="story-ring">
               <div className="story-preview">
                 <img src={story.lastPhoto.thumb || story.lastPhoto.url} alt="Story preview" />
               </div>
@@ -27,6 +44,10 @@ export default function Stories() {
             <span className="story-label">{story.title}</span>
           </div>
         ))}
+
+        {stories.length === 0 && (
+          <p className="no-stories">📸 Pozele vor apărea aici...</p>
+        )}
       </div>
 
       {selectedStory && (
@@ -35,6 +56,7 @@ export default function Stories() {
     </>
   );
 }
+
 
 
 
