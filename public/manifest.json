@@ -1,12 +1,13 @@
 {
-  "name": "Nuntă Vlad & Denisa",
+  "name": "Nuntă Vlad & Denisa - 18 Aprilie 2026",
   "short_name": "Nuntă V&D",
-  "description": "Aplicația oficială pentru nunta noastră",
+  "description": "Aplicația oficială pentru nunta noastră cu countdown, galerie foto și stories",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#FAFAFA",
   "theme_color": "#E1306C",
   "orientation": "portrait",
+  "scope": "/",
   "icons": [
     {
       "src": "/icon-192.png",
