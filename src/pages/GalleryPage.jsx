@@ -1,4 +1,60 @@
 import React, { useState, useEffect } from 'react';
+import { getAllPhotos } from '../utils/photoStorage';
+import PhotoPost from '../components/PhotoPost';
+
+export default function GalleryPage() {
+  const [photos, setPhotos] = useState([]);
+  const [selectedPhoto, setSelectedPhoto] = useState(null);
+  const [filter, setFilter] = useState('all');
+
+  useEffect(() => {
+    loadPhotos();
+  }, [filter]);
+
+  const loadPhotos = () => {
+    const all = getAllPhotos();
+    setPhotos(filter === 'mine' ? all.filter(p => p.deviceId === localStorage.getItem('deviceId')) : all);
+  };
+
+  return (
+    <div className="page gallery-page">
+      <div className="gallery-header">
+        <h2>Galerie</h2>
+        <select value={filter} onChange={(e) => setFilter(e.target.value)}>
+          <option value="all">Toate</option>
+          <option value="mine">Doar ale mele</option>
+        </select>
+      </div>
+
+      <div className="gallery-grid-edge">
+        {photos.map(photo => (
+          <div key={photo.id} className="gallery-item-edge" onClick={() => setSelectedPhoto(photo)}>
+            <img src={photo.thumb || photo.url} alt="Gallery" />
+            <div className="photo-stats">
+              <span>❤️{photo.likes}</span>
+              <span>💬{photo.comments.length}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {selectedPhoto && (
+        <div className="photo-fullscreen-modal">
+          <PhotoPost 
+            photo={selectedPhoto} 
+            onUpdate={loadPhotos} 
+            isFullscreen 
+            onClose={() => setSelectedPhoto(null)} 
+          />
+        </div>
+      )}
+    </div>
+  );
+}
+
+
+
+/*import React, { useState, useEffect } from 'react';
 import { getAllPhotos, getPhotosByLocation } from '../utils/photoStorage';
 
 export default function GalleryPage() {
@@ -47,7 +103,7 @@ export default function GalleryPage() {
     </div>
   );
 }
-
+*/
 
 
 /*
