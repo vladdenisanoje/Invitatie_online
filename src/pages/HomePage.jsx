@@ -5,6 +5,52 @@ import PhotoPost from '../components/PhotoPost';
 import Stories from '../components/Stories';
 import { getAllPhotos, getPinnedPhotos, updatePinnedPhotos } from '../utils/photoStorage';
 
+import { useState, useEffect } from 'react';
+
+export default function HomePage() {
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [showInstallButton, setShowInstallButton] = useState(false);
+
+  useEffect(() => {
+    const handler = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setShowInstallButton(true);
+    };
+    
+    window.addEventListener('beforeinstallprompt', handler);
+    
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) return;
+    
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    
+    if (outcome === 'accepted') {
+      console.log('App installed!');
+    }
+    
+    setDeferredPrompt(null);
+    setShowInstallButton(false);
+  };
+
+  return (
+    <div className="page">
+      {showInstallButton && (
+        <button className="install-app-btn" onClick={handleInstallClick}>
+          📱 Instalează Aplicația
+        </button>
+      )}
+      
+      {/* Rest of your code... */}
+    </div>
+  );
+}
+
+
 export default function HomePage() {
   const [photos, setPhotos] = useState([]);
   const [pinnedPhotos, setPinnedPhotos] = useState([]);
