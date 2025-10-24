@@ -1,3 +1,98 @@
+import React, { useState, useRef } from 'react';
+import { likePhoto, pinPhoto } from '../utils/photoStorage';
+
+export default function PhotoPost({ photo, onUpdate, isFullscreen, onClose }) {
+  const [showComments, setShowComments] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
+  const [showHeartAnim, setShowHeartAnim] = useState(false);
+  const lastTap = useRef(0);
+  const touchStart = useRef(0);
+
+  const handleDoubleTap = () => {
+    const now = Date.now();
+    if (now - lastTap.current < 300) {
+      handleLike();
+      setShowHeartAnim(true);
+      setTimeout(() => setShowHeartAnim(false), 800);
+    }
+    lastTap.current = now;
+  };
+
+  const handleLike = () => {
+    if (!isLiked) {
+      likePhoto(photo.id);
+      setIsLiked(true);
+      onUpdate();
+    }
+  };
+
+  const handlePin = () => {
+    const result = pinPhoto(photo.id);
+    if (result?.error) {
+      // Toast minimal
+    } else {
+      onUpdate();
+    }
+  };
+
+  const handleTouchStart = (e) => {
+    if (isFullscreen) touchStart.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e) => {
+    if (isFullscreen) {
+      const diff = touchStart.current - e.changedTouches[0].clientY;
+      if (diff < -100) onClose?.();
+    }
+  };
+
+  return (
+    <div 
+      className={`photo-post ${photo.isPinned ? 'pinned' : ''} ${isFullscreen ? 'fullscreen' : ''}`}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
+      {!isFullscreen && (
+        <div className="post-header">
+          <span>{new Date(photo.timestamp).toLocaleTimeString('ro-RO', { hour: '2-digit', minute: '2-digit' })}</span>
+        </div>
+      )}
+
+      <div className="post-image" onClick={handleDoubleTap}>
+        <img src={photo.url} alt="Photo" />
+        {showHeartAnim && <div className="heart-burst">❤️</div>}
+        {photo.isPinned && (
+          <div className="pin-indicator">📌 {photo.pinCount}/5</div>
+        )}
+      </div>
+
+      <div className="post-actions">
+        <button onClick={handleLike} className={isLiked ? 'liked' : ''}>
+          {isLiked ? '❤️' : '🤍'} {photo.likes}
+        </button>
+        <button onClick={() => setShowComments(!showComments)}>
+          💬 {photo.comments.length}
+        </button>
+        <button onClick={handlePin}>📌</button>
+      </div>
+
+      {showComments && (
+        <div className="comments-section">
+          {photo.comments.map(c => (
+            <div key={c.id} className="comment">
+              <p>{c.text}</p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+
+
+
+/*
 import React, { useState } from 'react';
 import { likePhoto, pinPhoto } from '../utils/photoStorage';
 
@@ -29,7 +124,7 @@ export default function PhotoPost({ photo, onUpdate }) {
     pinPhoto(photo.id);
     onUpdate();
     alert('📌 Poza a fost adăugată la destacate pentru +1 minut!');
-  };*/
+  };*-/
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -93,7 +188,7 @@ export default function PhotoPost({ photo, onUpdate }) {
 
   return (
     <div className={`photo-post ${photo.isPinned ? 'pinned' : ''}`}>
-      {/* Header */}
+      {/* Header *-/}
       <div className="post-header">
         <span className="post-location">
           {getLocationEmoji(photo.location)}
@@ -101,7 +196,7 @@ export default function PhotoPost({ photo, onUpdate }) {
         <span className="post-time">{getTimeAgo(photo.timestamp)}</span>
       </div>
 
-      {/* Photo */}
+      {/* Photo *-/}
       <div className="post-image">
         <img src={photo.url} alt="Wedding photo" />
         {photo.isPinned && (
@@ -114,7 +209,7 @@ export default function PhotoPost({ photo, onUpdate }) {
         )}
       </div>
 
-      {/* Actions */}
+      {/* Actions *-/}
       <div className="post-actions">
         <button 
           className={`action-btn ${isLiked ? 'liked' : ''}`}
@@ -139,7 +234,7 @@ export default function PhotoPost({ photo, onUpdate }) {
         </button>
       </div>
 
-      {/* Comments */}
+      {/* Comments *-/}
       {showComments && (
         <div className="post-comments">
           {photo.comments.length === 0 ? (
@@ -156,4 +251,5 @@ export default function PhotoPost({ photo, onUpdate }) {
       )}
     </div>
   );
+  */
 }
