@@ -1,3 +1,4 @@
+// src/utils/imgbbAlbum.js
 export async function fetchImgBBAlbumImages(albumUrl) {
   const res = await fetch(albumUrl);
   const html = await res.text();
@@ -7,5 +8,5 @@ export async function fetchImgBBAlbumImages(albumUrl) {
   while ((match = regex.exec(html)) !== null) {
     imgUrls.push(match[1]);
   }
-  return imgUrls;
+  return [...new Set(imgUrls)];
 }
