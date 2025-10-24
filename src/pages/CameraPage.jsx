@@ -1,6 +1,103 @@
 import React, { useState, useRef } from 'react';
 import { uploadToImgBB } from '../config/imgbb';
 import { addPhoto } from '../utils/photoStorage';
+import { showToast } from '../components/ToastContainer';
+
+export default function CameraPage() {
+  const [capturedImage, setCapturedImage] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef(null);
+
+  const compressImage = (file) => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          let { width, height } = img;
+          const maxSize = 1200;
+          if (width > maxSize || height > maxSize) {
+            if (width > height) {
+              height = (height * maxSize) / width;
+              width = maxSize;
+            } else {
+              width = (width * maxSize) / height;
+              height = maxSize;
+            }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          ctx.drawImage(img, 0, 0, width, height);
+          canvas.toBlob((blob) => resolve(new File([blob], file.name, { type: 'image/jpeg' })), 'image/jpeg', 0.85);
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const uploadInBackground = async (file) => {
+    try {
+      showToast('📤 Se încarcă...', 'info');
+      setUploading(true);
+      const compressed = await compressImage(file);
+      const result = await uploadToImgBB(compressed);
+      if (result.success) {
+        addPhoto({ url: result.url, thumb: result.thumb, location: 'general' });
+        showToast('✅ Încărcată!', 'success');
+        setCapturedImage(null);
+      } else {
+        showToast('❌ Eroare', 'error');
+      }
+    } catch (error) {
+      showToast('❌ Eroare', 'error');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleFileSelect = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => setCapturedImage(e.target.result);
+    reader.readAsDataURL(file);
+    uploadInBackground(file);
+  };
+
+  return (
+    <div className="page camera-page">
+      <h2>📸 Fă o poză</h2>
+      
+      <input ref={fileInputRef} type="file" accept="image/*" capture="environment" onChange={handleFileSelect} style={{ display: 'none' }} />
+      
+      {capturedImage && (
+        <div className="image-preview">
+          <img src={capturedImage} alt="Preview" />
+          {uploading && <div className="upload-indicator">⏳</div>}
+        </div>
+      )}
+
+      <button className="camera-btn-main" onClick={() => fileInputRef.current.click()}>
+        📷 Fă o poză
+      </button>
+
+      <p className="hint-text">Rămâi aici, poți face mai multe poze</p>
+    </div>
+  );
+}
+
+
+
+
+
+
+
+/*import React, { useState, useRef } from 'react';
+import { uploadToImgBB } from '../config/imgbb';
+import { addPhoto } from '../utils/photoStorage';
 import { useNavigate } from 'react-router-dom';
 import { showToast } from '../components/ToastContainer';
 
@@ -88,7 +185,7 @@ export default function CameraPage() {
   );
 }
 
-
+*/
 
 /*
 import React, { useState, useRef } from 'react';
