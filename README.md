@@ -34,7 +34,6 @@ public/
   Front.jpg
 
 
-
 # Wedding App - Modern Instagram-Inspired PWA
 
 ## Descriere generală
