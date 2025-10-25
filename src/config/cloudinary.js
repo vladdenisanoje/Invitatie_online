@@ -1,8 +1,6 @@
-// src/config/cloudinary.js
 export const CLOUDINARY_CLOUD_NAME = 'dfkxk9qsi';
 export const CLOUDINARY_UPLOAD_PRESET = 'wedding_photos';
 export const CLOUDINARY_FOLDER = 'nunta-vlad-denisa';
-export const CLOUDINARY_API_KEY = '189925683352542';
 
 export async function uploadToCloudinary(imageFile) {
   const formData = new FormData();
@@ -32,35 +30,12 @@ export async function uploadToCloudinary(imageFile) {
 
 export async function fetchCloudinaryImages() {
   try {
-    const response = await fetch(
-      `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/resources/search`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Basic ${btoa(CLOUDINARY_CLOUD_NAME + ':' + CLOUDINARY_API_KEY)}`
-        },
-        body: JSON.stringify({
-          folder: CLOUDINARY_FOLDER,
-          max_results: 1000,
-          resource_type: 'image'
-        })
-      }
-    );
-
-    if (response.ok) {
-      const data = await response.json();
-      return (data.resources || []).map(img => ({
-        id: img.public_id,
-        url: img.secure_url,
-        thumb: img.secure_url.replace('/upload/', '/upload/w_400,h_400,c_fill/'),
-        timestamp: img.created_at
-      }));
-    } else {
-      console.error('Search API error:', response.status);
-    }
+    const response = await fetch('/.netlify/functions/cloudinary-search', {
+      method: 'POST'
+    });
+    return await response.json();
   } catch (error) {
     console.error('Fetch error:', error);
+    return [];
   }
-  return [];
 }
