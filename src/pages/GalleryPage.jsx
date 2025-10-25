@@ -1,36 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { fetchCloudinaryImages } from '../config/cloudinary';
-import { getAllPhotos } from '../utils/photoStorage';
 
 export default function GalleryPage() {
   const [photos, setPhotos] = useState([]);
-  const [filter, setFilter] = useState('all');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadPhotos();
-  }, [filter]);
+    loadCloudinaryPhotos();
+  }, []);
 
-  const loadPhotos = async () => {
-    if (filter === 'mine') {
-      const local = getAllPhotos();
-      setPhotos(local);
-    } else {
-      setLoading(true);
-      const cloud = await fetchCloudinaryImages();
-      setPhotos(cloud);
-      setLoading(false);
-    }
+  const loadCloudinaryPhotos = async () => {
+    setLoading(true);
+    const cloudPhotos = await fetchCloudinaryImages();
+    setPhotos(cloudPhotos);
+    setLoading(false);
   };
 
   return (
     <div className="page gallery-page">
       <div className="gallery-header">
         <h2>Galerie</h2>
-        <select value={filter} onChange={e => setFilter(e.target.value)}>
-          <option value="all">Toate pozele</option>
-          <option value="mine">Ale mele</option>
-        </select>
         <span>{photos.length} poze</span>
       </div>
 
@@ -54,6 +43,7 @@ export default function GalleryPage() {
     </div>
   );
 }
+
 
 
 
