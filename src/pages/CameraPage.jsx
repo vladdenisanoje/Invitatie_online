@@ -49,11 +49,11 @@ export default function CameraPage() {
       const compressed = await compressImage(file);
       const result = await uploadToCloudinary(compressed);
       if (result.success) {
-        addPhoto({ url: result.url, thumb: result.thumb, location: 'general' });
+        addPhoto({ url: result.url, thumb: result.thumb });
         showToast('✅ Încărcată!', 'success');
         setCapturedImage(null);
       } else {
-        showToast('❌ Eroare', 'error');
+        showToast('❌ Eroare upload', 'error');
       }
     } catch (error) {
       showToast('❌ Eroare', 'error');
@@ -82,11 +82,10 @@ export default function CameraPage() {
         onChange={handleFileSelect}
         style={{ display: 'none' }}
       />
-      <button onClick={() => fileInputRef.current?.click()} className="fab">
+      <button onClick={() => fileInputRef.current?.click()} className="fab" title="Fă o poză">
         📸
       </button>
-      {capturedImage && <p>Poza se va încărca automat în fundal...</p>}
-      {uploading && <p>⏳ Se încarcă...</p>}
+      {uploading && <p style={{textAlign: 'center', marginTop: '20px'}}>⏳ Se încarcă...</p>}
     </div>
   );
 }
