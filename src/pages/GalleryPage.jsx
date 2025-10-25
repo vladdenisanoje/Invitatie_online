@@ -1,34 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { fetchImgBBAlbumImages } from '../utils/imgbbAlbum';
+import { fetchCloudinaryImages } from '../config/cloudinary';
 import { getAllPhotos } from '../utils/photoStorage';
 
 export default function GalleryPage() {
   const [photos, setPhotos] = useState([]);
   const [filter, setFilter] = useState('all');
-  const albumUrl = 'https://ibb.co/album/r3HRXD'; // Albumul tău public
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (filter === 'mine') {
-      // Arată doar pozele locale ale utilizatorului
       const mine = getAllPhotos();
       setPhotos(mine);
+      setLoading(false);
     } else {
-      // Arată TOATE pozele din albumul public ImgBB
-      fetchImgBBAlbumImages(albumUrl).then(urls => {
-        // Transformă URL-urile în format compatibil cu PhotoPost
-        const formattedPhotos = urls.map((url, idx) => ({
-          id: `imgbb-${idx}`,
-          url: url,
-          thumb: url,
-          timestamp: new Date().toISOString(),
-          likes: 0,
-          comments: [],
-          isPinned: false
-        }));
-        setPhotos(formattedPhotos);
-      });
+      loadCloudinaryPhotos();
     }
-  }, [filter, albumUrl]);
+  }, [filter]);
+
+  const loadCloudinaryPhotos = async () => {
+    setLoading(true);
+    const cloudPhotos = await fetchCloudinaryImages();
+    setPhotos(cloudPhotos);
+    setLoading(false);
+  };
 
   return (
     <div className="page gallery-page">
@@ -41,22 +35,27 @@ export default function GalleryPage() {
         <span>{photos.length} poze</span>
       </div>
 
-      <div className="gallery-grid">
-        {photos.length === 0 ? (
-          <p style={{textAlign: 'center', padding: '20px'}}>
-            📸 Nicio poză încă. Fă prima poză!
-          </p>
-        ) : (
-          photos.map((photo, idx) => (
-            <div key={photo.id || idx} className="gallery-item">
-              <img src={photo.thumb || photo.url} alt="Poza de la nuntă" />
-            </div>
-          ))
-        )}
-      </div>
+      {loading ? (
+        <p style={{textAlign: 'center', padding: '40px'}}>Încărcare...</p>
+      ) : (
+        <div className="gallery-grid">
+          {photos.length === 0 ? (
+            <p style={{textAlign: 'center', padding: '40px', gridColumn: '1/-1'}}>
+              📸 Nicio poză încă
+            </p>
+          ) : (
+            photos.map((photo) => (
+              <div key={photo.id} className="gallery-item">
+                <img src={photo.thumb || photo.url} alt="Galerie nuntă" />
+              </div>
+            ))
+          )}
+        </div>
+      )}
     </div>
   );
 }
+
 
 
 
