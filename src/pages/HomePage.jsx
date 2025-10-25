@@ -110,7 +110,7 @@ export default function HomePage({ isDark, setIsDark }) {
       <div className="post-card">
         <div className="post-image">
           <img 
-            src="/Invitatie_online/Front.jpg"
+            src="Front.jpg"
             alt="Invitație Nuntă Vlad & Denisa" 
             className="invitation-image" 
           />
