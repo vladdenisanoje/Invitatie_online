@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { uploadToImgBB } from '../config/imgbb';
+import { uploadToCloudinary } from '../config/cloudinary';
 import { addPhoto } from '../utils/photoStorage';
 import { showToast } from '../components/ToastContainer';
 
@@ -43,10 +43,10 @@ export default function CameraPage() {
       showToast('📤 Se încarcă...', 'info');
       setUploading(true);
       const compressed = await compressImage(file);
-      const result = await uploadToImgBB(compressed);
+      const result = await uploadToCloudinary(imageFile);
       if (result.success) {
-        addPhoto({ url: result.url, thumb: result.thumb, location: 'general' });
-        showToast('✅ Încărcată!', 'success');
+        addPhoto({ url: result.url, thumb: result.thumb });
+        showToast('Poza a fost încărcată!');
         setCapturedImage(null);
       } else {
         showToast('❌ Eroare', 'error');
