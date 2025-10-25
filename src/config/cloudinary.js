@@ -7,7 +7,6 @@ export async function uploadToCloudinary(imageFile) {
   formData.append('file', imageFile);
   formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
   formData.append('folder', CLOUDINARY_FOLDER);
-  formData.append('tags', 'wedding');
 
   try {
     const response = await fetch(
@@ -19,8 +18,7 @@ export async function uploadToCloudinary(imageFile) {
       return {
         success: true,
         url: data.secure_url,
-        thumb: data.secure_url.replace('/upload/', '/upload/w_400,h_400,c_fill/'),
-        publicId: data.public_id
+        thumb: data.secure_url.replace('/upload/', '/upload/w_400,h_300,c_fill/'),
       };
     }
   } catch (error) {
@@ -29,16 +27,7 @@ export async function uploadToCloudinary(imageFile) {
   return { success: false };
 }
 
-// Netlify Function - NO CORS!
+// Mock gallery - retur ultimele 10 poze din Cloudinary folder (via URL preview)
 export async function fetchCloudinaryImages() {
-  try {
-    const response = await fetch('/.netlify/functions/cloudinary-search', {
-      method: 'POST'
-    });
-    const images = await response.json();
-    return images;
-  } catch (error) {
-    console.error('Fetch error:', error);
-    return [];
-  }
+  return [];
 }
