@@ -1,20 +1,11 @@
-// netlify/functions/cloudinary-search.js
 exports.handler = async (event, context) => {
-  const headers = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'POST',
-    'Content-Type': 'application/json'
-  };
-
-  if (event.httpMethod === 'OPTIONS') {
-    return { statusCode: 200, headers };
-  }
-
   const CLOUD_NAME = 'dfkxk9qsi';
+  const API_KEY = '189925683352542';
   const API_SECRET = process.env.CLOUDINARY_API_SECRET;
 
+  const auth = Buffer.from(`${CLOUD_NAME}:${API_SECRET}`).toString('base64');
+
   try {
-    const auth = Buffer.from(`${CLOUD_NAME}:${API_SECRET}`).toString('base64');
     const response = await fetch(
       `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/resources/search`,
       {
@@ -41,14 +32,12 @@ exports.handler = async (event, context) => {
 
     return {
       statusCode: 200,
-      headers,
       body: JSON.stringify(resources)
     };
   } catch (error) {
     console.error('Error:', error);
     return {
       statusCode: 500,
-      headers,
       body: JSON.stringify([])
     };
   }
