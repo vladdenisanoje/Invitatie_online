@@ -1,10 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { uploadToCloudinary } from '../config/cloudinary';
-import { addPhoto } from '../utils/photoStorage';
 import { showToast } from '../components/ToastContainer';
 
 export default function CameraPage() {
-  const [capturedImage, setCapturedImage] = useState(null);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef(null);
 
@@ -49,9 +47,7 @@ export default function CameraPage() {
       const compressed = await compressImage(file);
       const result = await uploadToCloudinary(compressed);
       if (result.success) {
-        addPhoto({ url: result.url, thumb: result.thumb });
         showToast('✅ Încărcată!', 'success');
-        setCapturedImage(null);
       } else {
         showToast('❌ Eroare upload', 'error');
       }
@@ -65,9 +61,6 @@ export default function CameraPage() {
   const handleFileSelect = (event) => {
     const file = event.target.files[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (e) => setCapturedImage(e.target.result);
-    reader.readAsDataURL(file);
     uploadInBackground(file);
   };
 
