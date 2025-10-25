@@ -5,23 +5,22 @@ import { getAllPhotos } from '../utils/photoStorage';
 export default function GalleryPage() {
   const [photos, setPhotos] = useState([]);
   const [filter, setFilter] = useState('all');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (filter === 'mine') {
-      const mine = getAllPhotos();
-      setPhotos(mine);
-      setLoading(false);
-    } else {
-      loadCloudinaryPhotos();
-    }
+    loadPhotos();
   }, [filter]);
 
-  const loadCloudinaryPhotos = async () => {
-    setLoading(true);
-    const cloudPhotos = await fetchCloudinaryImages();
-    setPhotos(cloudPhotos);
-    setLoading(false);
+  const loadPhotos = async () => {
+    if (filter === 'mine') {
+      const local = getAllPhotos();
+      setPhotos(local);
+    } else {
+      setLoading(true);
+      const cloud = await fetchCloudinaryImages();
+      setPhotos(cloud);
+      setLoading(false);
+    }
   };
 
   return (
@@ -36,17 +35,17 @@ export default function GalleryPage() {
       </div>
 
       {loading ? (
-        <p style={{textAlign: 'center', padding: '40px'}}>Încărcare...</p>
+        <p style={{textAlign: 'center', padding: '40px'}}>⏳ Încărcare...</p>
       ) : (
         <div className="gallery-grid">
           {photos.length === 0 ? (
             <p style={{textAlign: 'center', padding: '40px', gridColumn: '1/-1'}}>
-              📸 Nicio poză încă
+              📸 Nicio poză
             </p>
           ) : (
             photos.map((photo) => (
               <div key={photo.id} className="gallery-item">
-                <img src={photo.thumb || photo.url} alt="Galerie nuntă" />
+                <img src={photo.thumb || photo.url} alt="Photo" loading="lazy" />
               </div>
             ))
           )}
@@ -55,6 +54,7 @@ export default function GalleryPage() {
     </div>
   );
 }
+
 
 
 
