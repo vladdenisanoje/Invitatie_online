@@ -2,6 +2,7 @@
 export const CLOUDINARY_CLOUD_NAME = 'dfkxk9qsi';
 export const CLOUDINARY_UPLOAD_PRESET = 'wedding_photos';
 export const CLOUDINARY_FOLDER = 'nunta-vlad-denisa';
+export const CLOUDINARY_API_KEY = '189925683352542';
 
 export async function uploadToCloudinary(imageFile) {
   const formData = new FormData();
@@ -12,10 +13,7 @@ export async function uploadToCloudinary(imageFile) {
   try {
     const response = await fetch(
       `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
-      {
-        method: 'POST',
-        body: formData
-      }
+      { method: 'POST', body: formData }
     );
     const data = await response.json();
     if (data.secure_url) {
@@ -25,67 +23,44 @@ export async function uploadToCloudinary(imageFile) {
         thumb: data.secure_url.replace('/upload/', '/upload/w_400,h_400,c_fill/'),
         publicId: data.public_id
       };
-    } else {
-      throw new Error('Upload failed');
     }
   } catch (error) {
-    console.error('Cloudinary upload error:', error);
-    return {
-      success: false,
-      error: error.message
-    };
+    console.error('Upload error:', error);
   }
+  return { success: false };
 }
 
 export async function fetchCloudinaryImages() {
   try {
-    // Cloudinary search API (JSON endpoint)
     const response = await fetch(
       `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/resources/search`,
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Basic ' + btoa('dfkxk9qsi:' + '') // Search is limited but works
+          'Authorization': `Basic ${btoa(CLOUDINARY_CLOUD_NAME + ':' + CLOUDINARY_API_KEY)}`
         },
         body: JSON.stringify({
           folder: CLOUDINARY_FOLDER,
-          max_results: 500,
+          max_results: 1000,
           resource_type: 'image'
         })
       }
     );
 
-    if (!response.ok) {
-      // Fallback: fetch de pe tag/folder cu transformations publice
-      return fetchViaTransformations();
+    if (response.ok) {
+      const data = await response.json();
+      return (data.resources || []).map(img => ({
+        id: img.public_id,
+        url: img.secure_url,
+        thumb: img.secure_url.replace('/upload/', '/upload/w_400,h_400,c_fill/'),
+        timestamp: img.created_at
+      }));
+    } else {
+      console.error('Search API error:', response.status);
     }
-
-    const data = await response.json();
-    return (data.resources || []).map(img => ({
-      id: img.public_id,
-      url: img.secure_url,
-      thumb: img.secure_url.replace('/upload/', '/upload/w_400,h_400,c_fill/'),
-      timestamp: img.created_at
-    }));
   } catch (error) {
-    console.error('Eroare Cloudinary fetch:', error);
-    return fetchViaTransformations();
+    console.error('Fetch error:', error);
   }
-}
-
-// Fallback: Uses public transformations
-async function fetchViaTransformations() {
-  try {
-    const urls = [];
-    // Încarcă imaginile din folder cu transformations publice
-    // Această metodă funcționează dacă folderul e public
-    for (let i = 1; i <= 100; i++) {
-      const testUrl = `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/image/upload/c_scale,w_400/nunta-vlad-denisa/`;
-      // ... (optional fallback)
-    }
-    return [];
-  } catch (error) {
-    return [];
-  }
+  return [];
 }
