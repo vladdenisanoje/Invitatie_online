@@ -1,4 +1,3 @@
-// src/config/cloudinary.js
 export const CLOUDINARY_CLOUD_NAME = 'dfkxk9qsi';
 export const CLOUDINARY_UPLOAD_PRESET = 'wedding_photos';
 export const CLOUDINARY_FOLDER = 'nunta-vlad-denisa';
