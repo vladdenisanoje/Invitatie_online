@@ -30,7 +30,11 @@ export default function CameraPage() {
           canvas.width = width;
           canvas.height = height;
           ctx.drawImage(img, 0, 0, width, height);
-          canvas.toBlob((blob) => resolve(new File([blob], file.name, { type: 'image/jpeg' })), 'image/jpeg', 0.85);
+          canvas.toBlob(
+            (blob) => resolve(new File([blob], file.name, { type: 'image/jpeg' })),
+            'image/jpeg',
+            0.85
+          );
         };
         img.src = e.target.result;
       };
@@ -43,15 +47,10 @@ export default function CameraPage() {
       showToast('📤 Se încarcă...', 'info');
       setUploading(true);
       const compressed = await compressImage(file);
-      const result = await uploadToCloudinary(imageFile);
+      const result = await uploadToCloudinary(compressed);
       if (result.success) {
-        addPhoto({ 
-          id: Date.now(),
-          url: result.url, 
-          thumb: result.thumb,
-          timestamp: new Date().toISOString()
-        });
-        showToast('Poza a fost încărcată!');
+        addPhoto({ url: result.url, thumb: result.thumb, location: 'general' });
+        showToast('✅ Încărcată!', 'success');
         setCapturedImage(null);
       } else {
         showToast('❌ Eroare', 'error');
@@ -74,22 +73,20 @@ export default function CameraPage() {
 
   return (
     <div className="page camera-page">
-      <h2>📸 Fă o poză</h2>
-      
-      <input ref={fileInputRef} type="file" accept="image/*" capture="environment" onChange={handleFileSelect} style={{ display: 'none' }} />
-      
-      {capturedImage && (
-        <div className="image-preview">
-          <img src={capturedImage} alt="Preview" />
-          {uploading && <div className="upload-indicator">⏳</div>}
-        </div>
-      )}
-
-      <button className="camera-btn-main" onClick={() => fileInputRef.current.click()}>
-        📷 Fă o poză
+      <h2>📷 Fă o Poză</h2>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        capture="environment"
+        onChange={handleFileSelect}
+        style={{ display: 'none' }}
+      />
+      <button onClick={() => fileInputRef.current?.click()} className="fab">
+        📸
       </button>
-
-      <p className="hint-text">Rămâi aici, poți face mai multe poze</p>
+      {capturedImage && <p>Poza se va încărca automat în fundal...</p>}
+      {uploading && <p>⏳ Se încarcă...</p>}
     </div>
   );
 }
