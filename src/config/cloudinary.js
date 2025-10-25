@@ -1,7 +1,7 @@
 // src/config/cloudinary.js
-export const CLOUDINARY_CLOUD_NAME = 'dfkxk9qsi'; // Ex: 'dxxxxxx'
-export const CLOUDINARY_UPLOAD_PRESET = 'wedding_photos'; // Upload preset name
-export const CLOUDINARY_FOLDER = 'nunta-vlad-denisa'; // Folder name
+export const CLOUDINARY_CLOUD_NAME = 'dfkxk9qsi';
+export const CLOUDINARY_UPLOAD_PRESET = 'wedding_photos';
+export const CLOUDINARY_FOLDER = 'nunta-vlad-denisa';
 
 export async function uploadToCloudinary(imageFile) {
   const formData = new FormData();
