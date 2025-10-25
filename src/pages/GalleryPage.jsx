@@ -5,14 +5,28 @@ import { getAllPhotos } from '../utils/photoStorage';
 export default function GalleryPage() {
   const [photos, setPhotos] = useState([]);
   const [filter, setFilter] = useState('all');
-  const albumUrl = "https://ibb.co/album/r3HRXD"; // schimbă URL-ul cu al tău
+  const albumUrl = 'https://ibb.co/album/r3HRXD'; // Albumul tău public
 
   useEffect(() => {
     if (filter === 'mine') {
+      // Arată doar pozele locale ale utilizatorului
       const mine = getAllPhotos();
       setPhotos(mine);
     } else {
-      fetchImgBBAlbumImages(albumUrl).then(setPhotos);
+      // Arată TOATE pozele din albumul public ImgBB
+      fetchImgBBAlbumImages(albumUrl).then(urls => {
+        // Transformă URL-urile în format compatibil cu PhotoPost
+        const formattedPhotos = urls.map((url, idx) => ({
+          id: `imgbb-${idx}`,
+          url: url,
+          thumb: url,
+          timestamp: new Date().toISOString(),
+          likes: 0,
+          comments: [],
+          isPinned: false
+        }));
+        setPhotos(formattedPhotos);
+      });
     }
   }, [filter, albumUrl]);
 
@@ -21,26 +35,29 @@ export default function GalleryPage() {
       <div className="gallery-header">
         <h2>Galerie</h2>
         <select value={filter} onChange={e => setFilter(e.target.value)}>
-          <option value="all">Toate</option>
+          <option value="all">Toate pozele</option>
           <option value="mine">Ale mele</option>
         </select>
         <span>{photos.length} poze</span>
       </div>
+
       <div className="gallery-grid">
-        {photos.map((photo, idx) => {
-          const imgSrc = typeof photo === 'string'
-            ? photo
-            : (photo.thumb || photo.url);
-          return (
-            <div key={imgSrc + idx} className="gallery-item">
-              <img src={imgSrc} alt="Poza galerie" />
+        {photos.length === 0 ? (
+          <p style={{textAlign: 'center', padding: '20px'}}>
+            📸 Nicio poză încă. Fă prima poză!
+          </p>
+        ) : (
+          photos.map((photo, idx) => (
+            <div key={photo.id || idx} className="gallery-item">
+              <img src={photo.thumb || photo.url} alt="Poza de la nuntă" />
             </div>
-          );
-        })}
+          ))
+        )}
       </div>
     </div>
   );
-} // ← ATENȚIE! Această acoladă FINALĂ trebuie să existe!
+}
+
 
 
 
