@@ -29,18 +29,14 @@ export async function uploadToCloudinary(imageFile) {
   return { success: false };
 }
 
+// Netlify Function - NO CORS!
 export async function fetchCloudinaryImages() {
   try {
-    const response = await fetch(
-      `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/image/list/wedding.json`
-    );
-    const data = await response.json();
-    return (data.resources || []).map(img => ({
-      id: img.public_id,
-      url: img.secure_url,
-      thumb: img.secure_url.replace('/upload/', '/upload/w_400,h_400,c_fill/'),
-      timestamp: img.created_at
-    }));
+    const response = await fetch('/.netlify/functions/cloudinary-search', {
+      method: 'POST'
+    });
+    const images = await response.json();
+    return images;
   } catch (error) {
     console.error('Fetch error:', error);
     return [];
