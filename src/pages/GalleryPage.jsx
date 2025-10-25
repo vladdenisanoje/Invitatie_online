@@ -6,10 +6,10 @@ export default function GalleryPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadCloudinaryPhotos();
+    loadPhotos();
   }, []);
 
-  const loadCloudinaryPhotos = async () => {
+  const loadPhotos = async () => {
     setLoading(true);
     const cloudPhotos = await fetchCloudinaryImages();
     setPhotos(cloudPhotos);
@@ -19,22 +19,22 @@ export default function GalleryPage() {
   return (
     <div className="page gallery-page">
       <div className="gallery-header">
-        <h2>Galerie</h2>
+        <h2>📸 Galerie Nuntă</h2>
         <span>{photos.length} poze</span>
       </div>
 
       {loading ? (
-        <p style={{textAlign: 'center', padding: '40px'}}>⏳ Încărcare...</p>
+        <p style={{textAlign: 'center', padding: '40px'}}>⏳ Se încarcă...</p>
       ) : (
         <div className="gallery-grid">
           {photos.length === 0 ? (
             <p style={{textAlign: 'center', padding: '40px', gridColumn: '1/-1'}}>
-              📸 Nicio poză
+              📸 Nicio poză încă. Fă prima poză!
             </p>
           ) : (
             photos.map((photo) => (
               <div key={photo.id} className="gallery-item">
-                <img src={photo.thumb || photo.url} alt="Photo" loading="lazy" />
+                <img src={photo.thumb || photo.url} alt="Poză nuntă" loading="lazy" />
               </div>
             ))
           )}
@@ -43,6 +43,7 @@ export default function GalleryPage() {
     </div>
   );
 }
+
 
 
 
