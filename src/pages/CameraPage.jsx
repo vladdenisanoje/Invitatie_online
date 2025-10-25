@@ -45,7 +45,12 @@ export default function CameraPage() {
       const compressed = await compressImage(file);
       const result = await uploadToCloudinary(imageFile);
       if (result.success) {
-        addPhoto({ url: result.url, thumb: result.thumb });
+        addPhoto({ 
+          id: Date.now(),
+          url: result.url, 
+          thumb: result.thumb,
+          timestamp: new Date().toISOString()
+        });
         showToast('Poza a fost încărcată!');
         setCapturedImage(null);
       } else {
